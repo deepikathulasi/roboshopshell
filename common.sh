@@ -1,5 +1,5 @@
 app_user = roboshop
-script = $(realpath "$0")
+script=$(realpath "$0")
 script_path=$(dirname"$script")
 log_file = /tmp/roboshop.log
 #rm -rf $log_file
@@ -10,17 +10,20 @@ func_print_head()
 }
 func_checking_sucess
 {
-  if[$? -eq 0];then
+  # shellcheck disable=SC1073
+  # shellcheck disable=SC1069
+  if[$? -eq 0 ];then
       echo func_print_head SUCESS
       else
         echo func_print_head Fail
         echo"refer a log for more information"
         exit 1
+    fi
 }
 func_schema_setup()
 {
-  if["$schema_setup"==mongo];then
-   func_print_head"copy mongodb repo"
+  if["${schema_setup}" == mongo ];then
+  func_print_head"copy mongodb repo"
 cp $script_path/mongo.repo /etc/yum.repos.d/mongo.repo &>>$log_file
  func_checking_sucess $?
 func_print_head"install mongodb client"
@@ -30,7 +33,7 @@ func_print_head "load schema"
 mongo --host mongodb.devops1008.online </app/schema/${ccomponent}.js &>>$log_file
  func_checking_sucess $?
 fi
-if"${schema_setup}" == mysql ]; then
+if ["${schema_setup}" == mysql ];then
 
  func_print_head "install my sql"
   yum install mysql -y &>>$log_file
@@ -43,7 +46,7 @@ func_app_prereq()
 {
   func_print_head"adding roboshop"
   id ${app_user} &>>/tmp/roboshop.conf
-  if[ $? -ne 0];then
+  if[$? -ne 0 ];then
     useradd ${app_user} &>>/tmp/roboshop.log
     fi
        func_checking_sucess $?
@@ -135,5 +138,5 @@ func_print_head update password in system files
 
   func_systemd_Setup
 
-}}
+}
 
